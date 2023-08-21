@@ -8,11 +8,19 @@
 
 #include <cstdint>
 
-SN74HC595N_Shift_Reg::SN74HC595N_Shift_Reg(GPIO_TypeDef* GPIOx, std::uint16_t GPIO_Pin)
-    : m_GPIOx(GPIOx), m_GPIO_Pin(GPIO_Pin)
+namespace LEDM
+{
+SN74HC595N_Shift_Reg::SN74HC595N_Shift_Reg(SN74HC595N_Pin const data_pin, 
+                                           SN74HC595N_Pin const clock_pin,
+                                           SN74HC595N_Pin const shift_pin)
+    : m_data_pin(data_pin)
+    , m_clock_pin(clock_pin)
+    , m_shift_pin(shift_pin)
 {
 }
 
 SN74HC595N_Shift_Reg::~SN74HC595N_Shift_Reg()
 {
 }
+
+} /* namespace LEDM */

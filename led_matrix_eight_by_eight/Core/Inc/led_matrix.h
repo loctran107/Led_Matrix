@@ -8,7 +8,9 @@
 #ifndef INC_LED_MATRIX_H_
 #define INC_LED_MATRIX_H_
 
-#ifdef __cplusplus
+#include <memory>
+#include "shift_register.h"
+
 namespace LEDM
 {
 
@@ -20,8 +22,8 @@ public:
 
 	// Destructor
 	~LedMatrix();
-	
-	void setup();
+
+	void run(void);
 
 private:
 
@@ -31,12 +33,15 @@ private:
 	LedMatrix& operator=(const LedMatrix &other) = delete;
 	LedMatrix& operator=(LedMatrix &&other) = delete;
 
+	void setup_col_shift_reg(void);
+	void setup_row_shift_reg(void);
+
+	std::unique_ptr<SN74HC595N_Shift_Reg> m_col_shift_reg {nullptr};
+	std::unique_ptr<SN74HC595N_Shift_Reg> m_row_shift_reg {nullptr};
 	unsigned m_col; // number of column the LED matrix supports
 	unsigned m_row; // number of row the LED matrix supports
 };
 
 } /* namespace LEDM */
-
-#endif // __cplusplus
 
 #endif /* INC_LED_MATRIX_H_ */

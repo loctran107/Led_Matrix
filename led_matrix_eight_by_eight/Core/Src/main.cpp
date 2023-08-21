@@ -111,13 +111,13 @@ int main(void)
   unsigned LED_MATRIX_ROW =  8U;
 
   LEDM::LedMatrix led_matrix(LED_MATRIX_COL, LED_MATRIX_ROW);
-  led_matrix.setup();
   while (true)
   {
     /* USER CODE END WHILE */
     MX_USB_HOST_Process();
 
     /* USER CODE BEGIN 3 */
+    led_matrix.run();
 
   }
   /* USER CODE END 3 */
