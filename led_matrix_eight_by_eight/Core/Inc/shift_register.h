@@ -25,15 +25,26 @@ public:
 		std::uint16_t GPIO_Pin;
 	};
 
+	enum SHIFT_BIT_ORDER
+	{
+		MSBFIRST,
+		LSBFIRST
+	};
+
 	SN74HC595N_Shift_Reg(SN74HC595N_Pin const data_pin,
-						 SN74HC595N_Pin const clock_pin,
-						 SN74HC595N_Pin const shift_pin);
+					     SN74HC595N_Pin const shift_pin,
+						 SN74HC595N_Pin const clock_pin);
 	~SN74HC595N_Shift_Reg();
+
+	// Make an assignment operator
+	SN74HC595N_Shift_Reg& operator=(SN74HC595N_Shift_Reg const& other);
+
+	void shift_out(std::uint8_t bit_order, std::uint8_t val);
 
 private:
 	SN74HC595N_Pin m_data_pin;
-	SN74HC595N_Pin m_clock_pin;
 	SN74HC595N_Pin m_shift_pin;
+	SN74HC595N_Pin m_clock_pin;
 };
 
 } /* namespace LEDM */
