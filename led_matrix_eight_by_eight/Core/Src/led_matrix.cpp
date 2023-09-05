@@ -45,10 +45,35 @@ void LedMatrix::setup_row_shift_reg(void)
 
 void LedMatrix::run(void)
 {
-    for (unsigned count = 0; count < 256; count++)
-    {
+    static unsigned toggle = 0;
+    unsigned toggle_val = (toggle) ? 0xFF : 0x00;
+    // for (unsigned row = 0, unsigned col = 8; row < 8; ++row)
+    // {
+        m_col_shift_reg->disable_latch();
+        m_row_shift_reg->disable_latch();
+        
+        // unsigned val = (1 << col);
+        m_col_shift_reg->shift_out(SN74HC595N_Shift_Reg::SHIFT_BIT_ORDER::MSBFIRST, 0xFF);
+        m_row_shift_reg->shift_out(SN74HC595N_Shift_Reg::SHIFT_BIT_ORDER::MSBFIRST, toggle_val);
+        
+        m_col_shift_reg->enable_latch();
+        m_row_shift_reg->enable_latch();
+
+        HAL_Delay(500);
+    // }
+    toggle ^= 1;
     
-    }
+
+    // for (unsigned val = 0; val < 256; ++val)
+    // {
+    //     m_row_shift_reg->disable_latch();
+        
+    //     m_row_shift_reg->shift_out(SN74HC595N_Shift_Reg::SHIFT_BIT_ORDER::MSBFIRST, val);
+        
+    //     m_row_shift_reg->enable_latch();
+
+    //     HAL_Delay(500);
+    // }
 }
 
 } /* namespace LEDM */

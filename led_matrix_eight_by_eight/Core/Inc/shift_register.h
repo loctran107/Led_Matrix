@@ -23,6 +23,13 @@ public:
 	{
 		GPIO_TypeDef* GPIOx;
 		std::uint16_t GPIO_Pin;
+
+		SN74HC595N_Pin& operator=(SN74HC595N_Pin const& other)
+		{
+			GPIOx = other.GPIOx;
+			GPIO_Pin = other.GPIO_Pin;
+			return *this;
+		}
 	};
 
 	enum SHIFT_BIT_ORDER
@@ -38,6 +45,9 @@ public:
 
 	// Make an assignment operator
 	SN74HC595N_Shift_Reg& operator=(SN74HC595N_Shift_Reg const& other);
+
+	void disable_latch(void);
+	void enable_latch(void);
 
 	void shift_out(std::uint8_t bit_order, std::uint8_t val);
 

@@ -25,6 +25,14 @@ SN74HC595N_Shift_Reg::~SN74HC595N_Shift_Reg()
 {
 }
 
+SN74HC595N_Shift_Reg& SN74HC595N_Shift_Reg::operator=(SN74HC595N_Shift_Reg const& other)
+{
+    m_data_pin  = other.m_data_pin;
+    m_shift_pin = other.m_shift_pin;
+    m_clock_pin = other.m_clock_pin;
+    return *this;
+}
+
 void SN74HC595N_Shift_Reg::shift_out(std::uint8_t bit_order, std::uint8_t val)
 {
     // Shift out 8 bits to the shift register
@@ -51,6 +59,16 @@ void SN74HC595N_Shift_Reg::shift_out(std::uint8_t bit_order, std::uint8_t val)
         HAL_GPIO_WritePin(m_clock_pin.GPIOx, m_clock_pin.GPIO_Pin, GPIO_PIN_SET);
         HAL_GPIO_WritePin(m_clock_pin.GPIOx, m_clock_pin.GPIO_Pin, GPIO_PIN_RESET);
     }
+}
+
+void SN74HC595N_Shift_Reg::disable_latch(void)
+{
+    HAL_GPIO_WritePin(m_shift_pin.GPIOx, m_shift_pin.GPIO_Pin, GPIO_PIN_RESET);
+}
+
+void SN74HC595N_Shift_Reg::enable_latch(void)
+{
+    HAL_GPIO_WritePin(m_shift_pin.GPIOx, m_shift_pin.GPIO_Pin, GPIO_PIN_SET);
 }
 
 } /* namespace LEDM */
