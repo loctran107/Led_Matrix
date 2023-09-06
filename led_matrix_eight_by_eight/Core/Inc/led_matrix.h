@@ -36,6 +36,8 @@ private:
 	void setup_col_shift_reg(void);
 	void setup_row_shift_reg(void);
 
+	void blink_all_leds();
+
 	std::unique_ptr<SN74HC595N_Shift_Reg> m_col_shift_reg {nullptr};
 	std::unique_ptr<SN74HC595N_Shift_Reg> m_row_shift_reg {nullptr};
 	unsigned m_col; // number of column the LED matrix supports
