@@ -112,15 +112,15 @@ int main(void)
   unsigned LED_MATRIX_ROW =  8U;
 
   LEDM::LedMatrix led_matrix(LED_MATRIX_COL, LED_MATRIX_ROW);
-  std::string const message("A");
-  unsigned const SCROLLING_SPEED { 5 };
+  std::string const message("Made by Donovan Tran!");
+  unsigned const SCROLLING_SPEED { 8 };
   while (true)
   {
     /* USER CODE END WHILE */
     MX_USB_HOST_Process();
 
     /* USER CODE BEGIN 3 */
-    led_matrix.display_letter_A(message, SCROLLING_SPEED);
+    led_matrix.display(message, SCROLLING_SPEED);
 
   }
   /* USER CODE END 3 */

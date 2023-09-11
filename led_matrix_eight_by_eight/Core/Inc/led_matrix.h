@@ -26,6 +26,7 @@ public:
 	~LedMatrix();
 
 	void display_letter_A(std::string const message, unsigned const scrolling_speed);
+	void display(std::string const message, unsigned const scrolling_speed);
 
 private:
 
@@ -41,15 +42,19 @@ private:
 	void blink_all_leds(void);
 	void init_led_animation(void);
 
-	void produce_frame(bool is_bit_on, unsigned const row);
+	void produce_frame(unsigned const row, unsigned const col);
 	void display_frame(void);
 	void shift_frame_left(void);
+	void rotate_matrix_90_degree_counterclockwise(std::uint8_t const * letter_bitmap);
+	void rotate_matrix_90_degree_clockwise(std::uint8_t const * letter_bitmap);
 
 	std::unique_ptr<SN74HC595N_Shift_Reg> m_col_shift_reg {nullptr};
 	std::unique_ptr<SN74HC595N_Shift_Reg> m_row_shift_reg {nullptr};
 	// TODO: maybe animation is not a good generic name for all of the effects
 	// 		 Consider changing this name later
-	std::vector<std::uint8_t> m_led_frame; // m_led_animation[frame][row]
+	std::uint8_t m_led_frame_non_transformed[8] { 0}; // m_led_animation[frame][row]
+	std::uint8_t m_led_frame_transformed[8] {0}; // m_led_animation[frame][row]
+	std::uint8_t m_rotated_90_degree_counterclockwise_bitmap[8]{0};
 	unsigned m_col; // number of column the LED matrix supports
 	unsigned m_row; // number of row the LED matrix supports
 };
