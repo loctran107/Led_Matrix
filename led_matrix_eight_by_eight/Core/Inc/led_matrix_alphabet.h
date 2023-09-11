@@ -11,16 +11,10 @@
 #include <cstdint>
 
 constexpr unsigned STANDARD_LETTER_LENGTH { 8U };
-constexpr unsigned STANDARD_LETTER_WIDTH { 8U };
 
-/* 0 0 0 1 1 0 0 0 */
-/* 0 0 1 1 1 1 0 0 */
-/* 0 1 1 0 0 1 1 0 */
-/* 0 1 1 1 1 1 1 0 */
-/* 0 1 1 1 1 1 1 0 */
-/* 0 1 1 0 0 1 1 0 */
-/* 0 1 1 0 0 1 1 0 */
-/* 0 1 1 0 0 1 1 0 */
-std::uint8_t letter_A[STANDARD_LETTER_LENGTH] = {0x18, 0x3C, 0x66, 0x7E, 0x7E, 0x66, 0x66, 0x66};
+std::uint8_t Led_matrix_alphabet[][STANDARD_LETTER_LENGTH] =
+{
+    {0x18, 0x3C, 0x66, 0x7E, 0x7E, 0x66, 0x66, 0x66} // 'A'
+};
 
 #endif /* INC_LED_MATRIX_ALPHABET_H_ */

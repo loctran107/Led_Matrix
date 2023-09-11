@@ -20,6 +20,7 @@
 #include "led_matrix.h"
 #include "main.h"
 #include "usb_host.h"
+#include <string>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -111,13 +112,15 @@ int main(void)
   unsigned LED_MATRIX_ROW =  8U;
 
   LEDM::LedMatrix led_matrix(LED_MATRIX_COL, LED_MATRIX_ROW);
+  std::string const message("A");
+  unsigned const SCROLLING_SPEED { 18 };
   while (true)
   {
     /* USER CODE END WHILE */
     MX_USB_HOST_Process();
 
     /* USER CODE BEGIN 3 */
-    led_matrix.run();
+    led_matrix.display(message, SCROLLING_SPEED);
 
   }
   /* USER CODE END 3 */

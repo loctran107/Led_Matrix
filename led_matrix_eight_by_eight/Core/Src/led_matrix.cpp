@@ -9,6 +9,9 @@
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_gpio.h"
 #include <memory>
+#include <string>
+#include <iterator>
+#include <algorithm>
 
 #include "shift_register.h"
 #include "led_matrix_alphabet.h"
@@ -17,6 +20,8 @@ namespace LEDM
 
 LedMatrix::LedMatrix(unsigned col, unsigned row) : m_col(col), m_row(row)
 {
+    // init_led_animation();
+
     setup_col_shift_reg();
     setup_row_shift_reg();
 }
@@ -24,6 +29,15 @@ LedMatrix::LedMatrix(unsigned col, unsigned row) : m_col(col), m_row(row)
 LedMatrix::~LedMatrix()
 {
 }
+
+void LedMatrix::init_led_animation(void)
+{
+    // The number of frame suppported is set to be equal to
+    // the number of col because this specific setup aims for the
+    // scrolling LED effects
+    // std::fill(m_led_frame.begin(), m_led_frame.end(), 0x0U);
+}
+
 
 void LedMatrix::setup_col_shift_reg(void)
 {
@@ -63,29 +77,72 @@ void LedMatrix::blink_all_leds(void)
     toggle ^= 1;
 }
 
-void LedMatrix::run(void)
+void LedMatrix::produce_frame(bool is_bit_on, unsigned const row)
 {
-    static unsigned scroll = 0;
-    scroll = (scroll >= 8) ? 0 : scroll;
-    
-    // This is the loop that added some delay per LED frame
-    for (unsigned speed = 0; speed < 15; speed++)
+    // Always map the first bit of each row with the corresponding value
+    if (is_bit_on)
     {
-        for (unsigned col = 0; col < m_col; ++col)
-        {   
-            m_row_shift_reg->disable_latch();
-            m_row_shift_reg->shift_out(SN74HC595N_Shift_Reg::SHIFT_BIT_ORDER::LSBFIRST, (1U << col));
-
-            m_col_shift_reg->disable_latch();
-            m_col_shift_reg->shift_out(SN74HC595N_Shift_Reg::SHIFT_BIT_ORDER::LSBFIRST, letter_A[col] << scroll);
-
-            m_col_shift_reg->enable_latch();
-            m_row_shift_reg->enable_latch();
-
-            HAL_Delay(1); // 1ms delay to smooth out the pattern
-        }
+        m_led_frame[row] |= 1U; // Turn on the rightmost bit of that row
     }
-    scroll++;
+    else
+    {
+        m_led_frame[row] &= ~(1U); // Turn off the rightmost bit of that row
+    }
+}
+
+void LedMatrix::display_frame(void)
+{
+    // Display all of the rows in each frame
+    for (unsigned row = 0; row < m_row; ++row)
+    {   
+        m_row_shift_reg->disable_latch();
+        m_row_shift_reg->shift_out(SN74HC595N_Shift_Reg::SHIFT_BIT_ORDER::LSBFIRST, (1U << row));
+
+        m_col_shift_reg->disable_latch();
+        m_col_shift_reg->shift_out(SN74HC595N_Shift_Reg::SHIFT_BIT_ORDER::LSBFIRST, m_led_frame[row]);
+
+        m_col_shift_reg->enable_latch();
+        m_row_shift_reg->enable_latch();
+
+        HAL_Delay(1); // 1ms delay to smooth out the pattern
+    }
+}
+
+void LedMatrix::shift_frame_left(void)
+{
+    for (unsigned row = 0; row < m_row; ++row)
+    {
+        m_led_frame[row] = (m_led_frame[row] << 1);
+    }
+}
+
+void LedMatrix::display(std::string const message, unsigned const scrolling_speed)
+{
+    unsigned const LETTER_TO_DISPLAY = 0; // Letter A
+
+
+    // Plot the Letter to display on the LED Frame
+    // Plot each row of the bitmap to the frame, starting
+    // from the MSB bit
+    for (unsigned col = 0; col < m_col; ++col)
+    {
+        for (unsigned row = 0; row < m_row; ++row)
+        {
+            // Traversing each column of the letter bitmap to extract
+            // the bit of each row and plot them into a frame. Starting
+            // from the MSB.
+            bool is_bit_on = (Led_matrix_alphabet[LETTER_TO_DISPLAY][row] & (1U << (m_col - 1 - col)));
+            produce_frame(is_bit_on, row);
+        }
+
+        unsigned current_speed = scrolling_speed;
+        while ((current_speed--) > 0)
+        {
+            display_frame();
+        }
+
+        shift_frame_left();
+    }
 }
 
 } /* namespace LEDM */
