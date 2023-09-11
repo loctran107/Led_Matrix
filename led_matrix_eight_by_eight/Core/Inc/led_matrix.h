@@ -25,7 +25,7 @@ public:
 	// Destructor
 	~LedMatrix();
 
-	void display(std::string const message, unsigned const scrolling_speed);
+	void display_letter_A(std::string const message, unsigned const scrolling_speed);
 
 private:
 
@@ -49,7 +49,7 @@ private:
 	std::unique_ptr<SN74HC595N_Shift_Reg> m_row_shift_reg {nullptr};
 	// TODO: maybe animation is not a good generic name for all of the effects
 	// 		 Consider changing this name later
-	std::uint8_t m_led_frame[8] { 0}; // m_led_animation[frame][row]
+	std::vector<std::uint8_t> m_led_frame; // m_led_animation[frame][row]
 	unsigned m_col; // number of column the LED matrix supports
 	unsigned m_row; // number of row the LED matrix supports
 };

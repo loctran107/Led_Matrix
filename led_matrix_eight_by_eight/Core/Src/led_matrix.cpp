@@ -20,7 +20,7 @@ namespace LEDM
 
 LedMatrix::LedMatrix(unsigned col, unsigned row) : m_col(col), m_row(row)
 {
-    // init_led_animation();
+    init_led_animation();
 
     setup_col_shift_reg();
     setup_row_shift_reg();
@@ -35,7 +35,10 @@ void LedMatrix::init_led_animation(void)
     // The number of frame suppported is set to be equal to
     // the number of col because this specific setup aims for the
     // scrolling LED effects
-    // std::fill(m_led_frame.begin(), m_led_frame.end(), 0x0U);
+    for (unsigned row = 0; row < m_row; ++row)
+    {
+        m_led_frame.push_back(0x0U);
+    }
 }
 
 
@@ -116,10 +119,9 @@ void LedMatrix::shift_frame_left(void)
     }
 }
 
-void LedMatrix::display(std::string const message, unsigned const scrolling_speed)
+void LedMatrix::display_letter_A(std::string const message, unsigned const scrolling_speed)
 {
-    unsigned const LETTER_TO_DISPLAY = 0; // Letter A
-
+    std::uint8_t Letter_A[STANDARD_LETTER_LENGTH] = {0x18, 0x3C, 0x66, 0x7E, 0x7E, 0x66, 0x66, 0x66}; // A
 
     // Plot the Letter to display on the LED Frame
     // Plot each row of the bitmap to the frame, starting
@@ -131,7 +133,7 @@ void LedMatrix::display(std::string const message, unsigned const scrolling_spee
             // Traversing each column of the letter bitmap to extract
             // the bit of each row and plot them into a frame. Starting
             // from the MSB.
-            bool is_bit_on = (Led_matrix_alphabet[LETTER_TO_DISPLAY][row] & (1U << (m_col - 1 - col)));
+            bool is_bit_on = (Letter_A[row] & (1U << (m_col - 1 - col)));
             produce_frame(is_bit_on, row);
         }
 
